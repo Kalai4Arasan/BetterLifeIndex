@@ -1,25 +1,27 @@
 import { render } from '@testing-library/react';
 import Layout, { Content, Header } from 'antd/lib/layout/layout';
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import Country from '../Country';
+import DataEntry from '../DataEntry';
 import Index from '../Index';
-import Responses from '../Responses';
 
-const Navigation=(props)=>{
+const Navigation=({
+    evalParams,
+    setEvalParams
+})=>{
     const location=useParams()
     const {type}=location
     let component;
     console.log(type)
     switch(type){
-        case "responses":
-            component=<Responses/>
-            break
-        case "country":
-            component=<Country/>
+        case "data-entry":
+            component=<DataEntry/>
             break
         default:
-            component=<Index/>
+            component=<Index
+            evalParams={evalParams}
+            setEvalParams={setEvalParams}
+            />
             break
     }
     return component;

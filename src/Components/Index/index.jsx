@@ -1,128 +1,193 @@
 import { Card, Col, Row, Slider } from 'antd';
 import React, { Component, useEffect, useState } from 'react';
+import ChartComponent, { Bar } from 'react-chartjs-2';
+import EvalParams from './EvalParams';
+import { Collapse } from 'antd';
+const { Panel } = Collapse;
 
-const Index=()=>{
-var canvas ;
-var context ;
-var Val_Max;
-var Val_Min;
-var sections;
-var xScale;
-var yScale;
-var y;
+const Index=({
+    evalParams,
+    setEvalParams
+})=>{
 
 const [itemName,setItemName]=useState([
-    "Afghanistan",
-    "India",
-    "Indonesia",
-    "Iran",
-    "Madagascar",
-    "Malawi",
-    "Malaysia",
-    "Maldives",
-    "United Kingdom",
-    "United States",
-    "United States of America",
+    "Axis bank",
+    "Bank of baroda",
+    "Bank of India",
+    "Canara Bank",
+    "CITI",
+    "DBS",
+    "HDFC",
+    "ICICI",
+    "IDBI",
+    "Indian Bank",
+    "IndusInd",
+    "Kotak Mahindra",
+    "SBI",
+    "PNB",
 ])
-const [itemValue,setItemValue]=useState([ 14, 7, 4.2, 4, 3.5,14, 7, 4.2, 4, 3.5,9 ])
-useEffect(()=>{
-        console.log(itemValue)
-        sections = itemValue.length;
-        Val_Max = 14;
-        var stepSize = 1;
-        var columnSize = 20;
-        var rowSize = 60;
-        var margin = 1;
-        // var header = "In Trillion $" 
-        canvas = document.getElementById("canvas");
-        context = canvas.getContext("2d");
-        // context.fillStyle = "#000"
-        
-        yScale = (canvas.height - columnSize - margin) / (Val_Max);
-        xScale = (canvas.width - rowSize) / (sections + 1);
-        
-        context.strokeStyle='#f0f2f5';
-        // context.beginPath();
-        context.font = "19 pt Arial"
-        // context.fillText(header, 0,columnSize - margin);
-        context.font = "16 pt Helvetica"
-        var count =  0;
-        for (let scale=Val_Max;scale>=0;scale = scale - stepSize) {
-            y = columnSize + (yScale * count * stepSize); 
-            context.fillText(scale, margin,y + margin);
-            context.moveTo(rowSize,y)
-            context.lineTo(canvas.width,y)
-            count++;
-        }
-        context.stroke();
-        context.font = "20 pt Verdana";
-        context.textBaseline="bottom";
-        let c=10
-        for (let i=0;i<itemName.length;i++) {
-            computeHeight(itemValue[i]);
-            context.fillText(itemName[i], xScale * (i+1),y - margin);
-            // for(let item in itemName[i]){
-            //     context.fillText(item,  xScale * (i+1), y - margin+c);
-            //     c+=10;
-            // }
-        }
-    
-    context.fillStyle="grey";
-        context.translate(0,canvas.height - margin);
-        context.scale(xScale,-1 * yScale);
-      
-        for (let i=0;i<itemValue.length;i++) {
-            context.fillRect(i+1, 0, 0.05, itemValue[i]);
-        }
-},itemValue)
 
+const [parameter,setParameter]=useState([
+    "Improves Personal Capabilities to think, feel, imagine, reason",
+    "Enhances Life Satisfaction ",
+    "Enhances Feeling of Purpose",
+    "Encourages participation",
+    "Reduces Time and Effort",
+    "Facilitates Convenience",
+    "Helps Save or Earn Money",
+    "Enhances Personal and Family Health and safety",
+    "Immersive Experience",
+    "Optimum Level of Challenge",
+    "Connects People",
+    "Builds Communities",
+    "Provides choices for socially responsible lifestyle decisions",
+    "Inclusive ( of age, gender, income, literacy, differently abled, language)",
+])
 
-function computeHeight(value) {
-	y = canvas.height - value * yScale ;	
-}
+const [itemValue,setItemValue]=useState([ 14, 7, 4.2, 4, 3.5, 14, 7, 4.2, 4, 3.5, 9, 12, 7,7 ])
 
-// console.log(itemValue)
 const changeValue=(e,index)=>{
-        let v=[...itemValue]
-        v[index]=e
-        setItemValue(v)
+    let v=[...itemValue]
+    v[index]=e
+    setItemValue(v)
 }
 
 
-    return (<>
-    <div style={{display:'flex',justifyContent:'space-between'}}>
-    <canvas id="canvas" height="500" style={{backgroundColor:'#f0f2f5',margin:'1rem',border:'1px solid grey',padding:'1rem'}} width="800"></canvas>
-    <div style={{margin:'1rem'}}>
-        <Card title="Countries" bordered={true} style={{ width: 300 }}>
-            {itemName&&itemName.map((item)=>{
-                // return <div style={{display:'flex',justifyContent:'space-around'}}>
-                //         
-                //         <Slider
-                //             style={{width:'200px'}}
-                //             min={1}
-                //             max={5}
-                //         />
-                //     </div>
-                return(
-                    <Row>
-                        <Col span={7}>
-                        <p>{item}</p>
-                        </Col>
-                        <Col span={1}></Col>
-                        <Col span={16}>
-                        <Slider
-                            min={1}
-                            max={5}
-                            onChange={(e)=>{changeValue(e,itemName.indexOf(item))}}
-                        />
-                        </Col>
-                    </Row>
-                )
-            })}
-        </Card>
-    </div>
-    </div>
-    </>)
+    return (
+    <>
+        <div style={{display:'flex',justifyContent:'space-between'}}>
+        <div id="cv">
+        <Bar
+        style={{backgroundColor:'white'}}
+            data={
+                {
+                    labels: itemName,
+                    datasets: [{
+                        label: 'Banks',
+                        data: itemValue,
+                        barThickness:4,
+                        backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        borderWidth: 1
+                    }]
+                }
+            }
+            width={1200}
+            height={500}
+            options={{
+                title:{
+                display:true,
+                text:"Better Life Index",
+                fontSize:25
+                },
+                legend:{
+                display:true,
+                },
+                scales: {
+                    xAxes: [{
+                       gridLines: {
+                          display: false
+                       }
+                    }],
+                    yAxes: [{
+                       gridLines: {
+                          display: false
+                       }
+                    }]
+               }
+                
+            }}
+        />
+        </div>
+        </div>
+        <Row>
+        <Col span={24}>
+        <div style={{margin:'1rem'}}>
+        <Collapse
+          expandIconPosition={'right'}
+        >
+          <Panel header="Evaluating Parameters" key="1">
+          <Row>
+                <Col span={7}>
+                {parameter&&parameter.slice(0,5).map((item)=>{
+                    return(
+                        <>
+                        <Row>
+                            <p>{item}</p>
+                        </Row>
+                        <Row>
+                            <Col span={24}>
+                            <Slider
+                                min={1}
+                                max={10}
+                                onChange={(e)=>{changeValue(e,parameter.indexOf(item))}}
+                            />
+                            </Col>
+                        </Row>
+                        </>
+                    )
+                })}
+                </Col>
+                <Col span={1}/>
+                <Col span={7}>
+                {parameter&&parameter.slice(5,10).map((item)=>{
+                    return(
+                        <>
+                        <Row>
+                            <p>{item}</p>
+                        </Row>
+                        <Row>
+                            <Col span={24}>
+                            <Slider
+                                min={1}
+                                max={10}
+                                onChange={(e)=>{changeValue(e,parameter.indexOf(item))}}
+                            />
+                            </Col>
+                        </Row>
+                        </>
+                    )
+                })}
+                </Col>
+                <Col span={1}/>
+                <Col span={7}>
+                {parameter&&parameter.slice(10,14).map((item)=>{
+                    return(
+                        <>
+                        <Row>
+                            <p>{item}</p>
+                        </Row>
+                        <Row>
+                            <Col span={24}>
+                            <Slider
+                                min={1}
+                                max={10}
+                                onChange={(e)=>{changeValue(e,parameter.indexOf(item))}}
+                            />
+                            </Col>
+                        </Row>
+                        </>
+                    )
+                })}
+                </Col>
+                </Row>
+          </Panel>
+        </Collapse>
+        </div>
+        </Col>
+        </Row>
+        <Row>
+            <Col span={4}></Col>
+            <Col span={16}>
+                <EvalParams
+                evalParams={evalParams}
+                setEvalParams={setEvalParams}
+                />
+            </Col>
+            <Col span={4}></Col>
+        </Row>
+    </>
+    )
 }
 
 export default Index
